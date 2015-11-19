@@ -2,6 +2,8 @@
 
 namespace Actinoids\ApiClient\Omeda;
 
+use Actinoids\ApiClient\Common\AbstractResourceClient;
+use Actinoids\ApiClient\Common\ApiClientException;
 use GuzzleHttp\Client;
 
 /**
