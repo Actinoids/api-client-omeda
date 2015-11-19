@@ -1,0 +1,21 @@
+{
+    "name": "actinoids/api-client-omeda",
+    "license": "Apache-2.0",
+    "type": "library",
+    "description": "Common repository for creating PHP API clients.",
+    "authors": [
+        {
+            "name": "Jacob Bare",
+            "email": "jacob.bare@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Actinoids\\ApiClient\\Omeda": "src/"
+        }
+    },
+    "require": {
+        "php": ">=5.4",
+        "actinoids/api-client-common":"~0.1"
+    }
+}
