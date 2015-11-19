@@ -7,7 +7,7 @@ use Actinoids\ApiClient\Common\ApiClientException;
 use GuzzleHttp\Client;
 
 /**
- * Omeda and Omail API client.
+ * Omeda and Omail API client. 
  *
  * @author Jacob Bare <jacob.bare@gmail.com>
  */
