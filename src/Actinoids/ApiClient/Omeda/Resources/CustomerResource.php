@@ -33,30 +33,50 @@ class CustomerResource extends AbstractResource
      * Behavior Lookup API
      *
      * The behavior lookup API call returns behavior information for a specified customer.
-     * Behavior information can be requested for a specific behavior OR for behaviors associated with a specific product OR all behaviors.
      *
      * https://jira.omeda.com/wiki/en/Customer_Behavior_API
      *
-     * @param   int         $customerId     The Omeda CustomerId to lookup.
-     * @param   int|null    $behaviorId     The Omeda BehaviorId (optional).
-     * @param   int|null    $productId      The Omeda ProductId (optional).
+     * @param   int     $customerId     The Omeda CustomerId to lookup.
      * @return  array
      */
     public function behaviorLookup($customerId, $behaviorId = null, $productId = null)
     {
-        $endpoint = '/customer/' . $customerId . '/behavior';
-        if (null === $behaviorId && null === $productId) {
-            $endpoint .= '/*';
-            return $this->getRoot()->send($endpoint);
-        }
-        if (null !== $behaviorId) {
-            $endpoint .= '/' . $behaviorId . '/*';
-            return $this->getRoot()->send($endpoint);
-        }
-        if (null !== $productId) {
-            $endpoint .= '/product/' . $productId . '/*';
-            return $this->getRoot()->send($endpoint);
-        }
+        $endpoint = '/customer/' . $customerId . '/behavior/*';
+        return $this->getRoot()->send($endpoint);
+    }
+
+    /**
+     * Behavior Lookup API by Behavior
+     *
+     * The behavior lookup API call returns behavior information for a specified customer and behavior.
+     *
+     * https://jira.omeda.com/wiki/en/Customer_Behavior_API
+     *
+     * @param   int     $customerId     The Omeda CustomerId to lookup.
+     * @param   int     $behaviorId     The Omeda BehvaiorId to lookup.
+     * @return  array
+     */
+    public function behaviorLookupByBehavior($customerId, $behaviorId)
+    {
+        $endpoint = '/customer/' . $customerId . '/behavior/' . $behaviorId . '/*';
+        return $this->getRoot()->send($endpoint);
+    }
+
+    /**
+     * Behavior Lookup API by Product
+     *
+     * The behavior lookup API call returns behavior information for a specified customer and product.
+     *
+     * https://jira.omeda.com/wiki/en/Customer_Behavior_API
+     *
+     * @param   int     $customerId     The Omeda CustomerId to lookup.
+     * @param   int     $productId      The Omeda ProductId to lookup.
+     * @return  array
+     */
+    public function behaviorLookupByProduct($customerId, $productId)
+    {
+        $endpoint = '/customer/' . $customerId . '/behavior/product/' . $productId . '/*';
+        return $this->getRoot()->send($endpoint);
     }
 
     /**
