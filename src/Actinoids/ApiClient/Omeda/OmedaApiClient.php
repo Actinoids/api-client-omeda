@@ -7,19 +7,12 @@ use Actinoids\ApiClient\Common\ApiClientException;
 use GuzzleHttp\Client;
 
 /**
- * Omeda and Omail API client. 
+ * Omeda and Omail API client.
  *
  * @author Jacob Bare <jacob.bare@gmail.com>
  */
 class OmedaApiClient extends AbstractResourceClient
 {
-    /**
-     * An array of request methods that this API supports.
-     *
-     * @var array
-     */
-    protected $supportedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
-
     /**
      * An array of request methods that this API deems as 'modifying.'
      *
@@ -35,51 +28,30 @@ class OmedaApiClient extends AbstractResourceClient
     protected $requiredConfigOptions = ['host', 'client', 'brand', 'appid', 'inputid'];
 
     /**
-     * {@inheritDoc}
-     */
-    protected function initClient()
-    {
-        $this->client = new Client([
-            'base_url'  => $this->getBaseUrl(),
-            'defaults'  => [
-                'headers'   => ['X-Omeda-Appid' => $this->getAppId()],
-            ],
-        ]);
-        $this->setResources();
-        return $this;
-    }
-
-    protected function setResources()
-    {
-        $namespace = __NAMESPACE__.'\\Resources';
-        $resources = [
-            'customer'  => 'CustomerResource',
-        ];
-        foreach ($resources as $key => $class) {
-            $fqcn = sprintf('%s\\%s', $namespace, $class);
-            $this->addResource(new $fqcn($key, $this));
-        }
-        return $this;
-    }
-
-    /**
-     * Gets the API hostname.
+     * An array of request methods that this API supports.
      *
-     * @return  string
+     * @var array
      */
-    public function getHost()
-    {
-        return trim($this->getConfig()->get('host'), '/');
-    }
+    protected $supportedMethods = ['GET', 'POST', 'PUT', 'DELETE'];
 
     /**
-     * Gets the client/customer
+     * Gets the App ID for reading
      *
      * @return string
      */
-    public function getClient()
+    public function getAppId()
     {
-        return $this->getConfig()->get('client');
+        return $this->getConfig()->get('appid');
+    }
+
+    /**
+     * Gets base URL for the API.
+     *
+     * @return  string
+     */
+    public function getBaseUrl()
+    {
+        return sprintf('https://%s', $this->getHost());
     }
 
     /**
@@ -93,33 +65,13 @@ class OmedaApiClient extends AbstractResourceClient
     }
 
     /**
-     * Gets the App ID for reading
+     * Gets the client/customer
      *
      * @return string
      */
-    public function getAppId()
+    public function getClient()
     {
-        return $this->getConfig()->get('appid');
-    }
-
-    /**
-     * Gets the Input ID for writing
-     *
-     * @return string
-     */
-    public function getInputId()
-    {
-        return $this->getConfig()->get('inputid');
-    }
-
-    /**
-     * Gets base URL for the API.
-     *
-     * @return  string
-     */
-    public function getBaseUrl()
-    {
-        return sprintf('https://%s', $this->getHost());
+        return $this->getConfig()->get('client');
     }
 
     /**
@@ -137,6 +89,26 @@ class OmedaApiClient extends AbstractResourceClient
             $formatted .= rtrim($endpoint, '/');
         }
         return $formatted;
+    }
+
+    /**
+     * Gets the API hostname.
+     *
+     * @return  string
+     */
+    public function getHost()
+    {
+        return trim($this->getConfig()->get('host'), '/');
+    }
+
+    /**
+     * Gets the Input ID for writing
+     *
+     * @return string
+     */
+    public function getInputId()
+    {
+        return $this->getConfig()->get('inputid');
     }
 
     /**
@@ -188,5 +160,36 @@ class OmedaApiClient extends AbstractResourceClient
             ];
         }
         return $this->client->createRequest($method, $this->getEndpoint($endpoint, $clientCall), $options);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function initClient()
+    {
+        $this->client = new Client([
+            'base_url'  => $this->getBaseUrl(),
+            'defaults'  => [
+                'headers'   => ['X-Omeda-Appid' => $this->getAppId()],
+            ],
+        ]);
+        $this->setResources();
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function setResources()
+    {
+        $namespace = __NAMESPACE__.'\\Resources';
+        $resources = [
+            'customer'  => 'CustomerResource',
+        ];
+        foreach ($resources as $key => $class) {
+            $fqcn = sprintf('%s\\%s', $namespace, $class);
+            $this->addResource(new $fqcn($key, $this));
+        }
+        return $this;
     }
 }
