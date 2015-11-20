@@ -60,6 +60,23 @@ class CustomerResource extends AbstractResource
     }
 
     /**
+     * Transaction Lookup Service.
+     *
+     * The Transaction Lookup service is used to check on the submission status of a particular customer POST submission.
+     * Please note that the data submitted to the queue will not necessarily be kept available indefinitely.
+     *
+     * https://jira.omeda.com/wiki/en/Transaction_Lookup_Service
+     *
+     * @param   int     $transactionId  The transaction identifier, handed back by the customer save() POST submission.
+     * @return  array
+     */
+    public function checkProcessingStatus($transactionId)
+    {
+        $endpoint = '/transaction/' . $transactionId . '/*';
+        return $this->getRoot()->send($endpoint);
+    }
+
+    /**
      * Customer Comprehensive Lookup Service.
      *
      * This API provides capabilities to retrieve the comprehensive information about a single customer.
@@ -264,6 +281,25 @@ class CustomerResource extends AbstractResource
     {
         $endpoint = '/customer/' . $customerId . '/phone/*';
         return $this->getRoot()->send($endpoint);
+    }
+
+    /**
+     * Save Customer and Order API.
+     *
+     * This API provides the ability to post a complete set of customer identity, contact, and demographic
+     * information along with order information for data processing (insert/update).
+     * Note that this service deposits data into a queue, it does not process data immediately.
+     * Back end processing of the data happens through a decoupled processing layer and depends on your own individual database configuration.
+     *
+     * https://jira.omeda.com/wiki/en/Save_Customer_and_Order_API
+     *
+     * @param   array   $customerElement    The customer element to save (create/update).
+     * @return  array
+     */
+    public function save(array $customerElement)
+    {
+        $endpoint = '/storecustomerandorder/*';
+        return $this->handleRequest($endpoint, $customerElement, 'POST');
     }
 
     /**
