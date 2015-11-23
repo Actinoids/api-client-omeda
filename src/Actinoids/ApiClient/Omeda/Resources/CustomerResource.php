@@ -30,6 +30,54 @@ class CustomerResource extends AbstractResource
     }
 
     /**
+     * Assign Behavior API.
+     *
+     * The Assign Behavior API provides the ability to add or update behavior information for an existing customer.
+     * Note that this service deposits data into a queue, it does not expressly process data directly.
+     * The remaining back end processing of the data (insertion into the marketing database) happens through a decoupled processing layer and depends on your own individual database configuration.
+     *
+     * https://jira.omeda.com/wiki/en/Behavior_Assign_API
+     *
+     * @param   int     $customerId         The customer to assign the behaviors to.
+     * @param   array   $behaviorElements   The behavior elements to assign.
+     * @return  array
+     */
+    public function assignBehaviors($customerId, array $behaviorElements)
+    {
+        $endpoint = '/assignbehavior/*';
+        $body = [
+            'OmedaCustomerId'   => (Integer) $customerId,
+            'CustomerBehaviors' => array_values($behaviorElements),
+        ];
+        return $this->handleRequest($endpoint, $body, 'POST');
+    }
+
+    /**
+     * Behavior Assign Bulk API.
+     *
+     * This API provides capabilities to create many Behaviors defined for a given brand to multiple customers.
+     *
+     * https://jira.omeda.com/wiki/en/Behavior_Assign_Bulk_API
+     *
+     * @param   array   $customerToBehaviorMap  An array keyed by customer id whose value is an array of behavior elements to assign.
+     * @param   array   $behaviorElements   The behavior elements to assign.
+     * @return  array
+     */
+    public function assignBehaviorsBulk(array $customerToBehaviorMap)
+    {
+        $endpoint = '/assignbehavior/bulk/*';
+        $body['Customers'] = [];
+
+        foreach ($customerToBehaviorMap as $customerId => $behaviorElements) {
+            $body['Customers'][] = [
+                'OmedaCustomerId'   => (Integer) $customerId,
+                'CustomerBehaviors' => array_values($behaviorElements),
+            ];
+        }
+        return $this->handleRequest($endpoint, $body, 'POST');
+    }
+
+    /**
      * Behavior Lookup API
      *
      * The behavior lookup API call returns behavior information for a specified customer.
